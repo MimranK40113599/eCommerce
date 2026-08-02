@@ -1,127 +1,137 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
 import { CATEGORIES } from "../../constants/constants";
 
-const ProductFilters = ({ onClose }) => {
+const ProductFilters = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [category, setCategory] = useState(searchParams.get("category") || "");
-  const [minPrice, setMinPrice] = useState(
-    searchParams.get("price[gte]") || "",
-  );
-  const [maxPrice, setMaxPrice] = useState(
-    searchParams.get("price[lte]") || "",
-  );
+  const [minPrice, setMinPrice] = useState(searchParams.get("price[gte]") || "");
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("price[lte]") || "");
 
-  const applyFilters = () => {
-    const params = {};
+  useEffect(() => {
+    setCategory(searchParams.get("category") || "");
+    setMinPrice(searchParams.get("price[gte]") || "");
+    setMaxPrice(searchParams.get("price[lte]") || "");
+  }, [searchParams]);
 
-    // Preserve existing params except filters
-    searchParams.forEach((value, key) => {
-      if (!["category", "price[gte]", "price[lte]"].includes(key)) {
-        params[key] = value;
-      }
-    });
-
-    if (category) params.category = category;
-    if (minPrice) params["price[gte]"] = minPrice;
-    if (maxPrice) params["price[lte]"] = maxPrice;
-
-    // Reset to page 1 when applying filters
-    params.page = 1;
-
-    setSearchParams(params);
-    if (onClose) onClose();
+  const updateFilters = (key, value) => {
+    if (value) {
+      searchParams.set(key, value);
+    } else {
+      searchParams.delete(key);
+    }
+    searchParams.set("page", 1);
+    setSearchParams(searchParams);
   };
 
-  const resetFilters = () => {
-    setCategory("");
-    setMinPrice("");
-    setMaxPrice("");
+  const applyPriceFilter = (e) => {
+    e.preventDefault();
+    if (minPrice) searchParams.set("price[gte]", minPrice);
+    else searchParams.delete("price[gte]");
+    
+    if (maxPrice) searchParams.set("price[lte]", maxPrice);
+    else searchParams.delete("price[lte]");
+    
+    searchParams.set("page", 1);
+    setSearchParams(searchParams);
+  };
 
-    const params = {};
-    searchParams.forEach((value, key) => {
-      if (!["category", "price[gte]", "price[lte]"].includes(key)) {
-        params[key] = value;
-      }
-    });
-    params.page = 1;
-    setSearchParams(params);
+  const clearFilters = () => {
+    searchParams.delete("category");
+    searchParams.delete("price[gte]");
+    searchParams.delete("price[lte]");
+    searchParams.set("page", 1);
+    setSearchParams(searchParams);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">Filters</h3>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-          <FaTimes />
-        </button>
-      </div>
-
+    <div className="flex flex-col space-y-6 text-[#0f1111]">
+      
       {/* Category Filter */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Category
-        </label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Categories</option>
+        <h4 className="font-bold text-[14px] mb-2">Department</h4>
+        <ul className="space-y-1 text-[14px]">
+          <li>
+            <button 
+              onClick={() => updateFilters("category", "")}
+              className={`hover:text-[#c45500] text-left ${category === "" ? "font-bold text-[#e47911]" : "text-[#007185]"}`}
+            >
+              Any Department
+            </button>
+          </li>
           {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
+            <li key={cat}>
+               <button 
+                onClick={() => updateFilters("category", cat)}
+                className={`hover:text-[#c45500] text-left ${category === cat ? "font-bold text-[#e47911]" : "text-[#0f1111] hover:underline"}`}
+               >
+                 {cat}
+               </button>
+            </li>
           ))}
-        </select>
+        </ul>
+      </div>
+
+      {/* Customer Reviews */}
+      <div>
+        <h4 className="font-bold text-[14px] mb-2">Customer Reviews</h4>
+        <ul className="space-y-2 text-[14px]">
+          {[4, 3, 2, 1].map((stars) => (
+            <li key={stars} className="flex items-center text-[#de7921] cursor-pointer hover:text-[#c45500]">
+              {'★'.repeat(stars)}{'★'.repeat(5-stars).replace(/★/g, '☆')} <span className="text-[#0f1111] ml-1">& Up</span>
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Price Range */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Price Range
-        </label>
-        <div className="flex space-x-4">
-          <div className="flex-1">
-            <input
-              type="number"
-              placeholder="Min"
-              value={minPrice}
-              onChange={(e) => setMinPrice(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              min="0"
-            />
-          </div>
-          <div className="flex-1">
-            <input
-              type="number"
-              placeholder="Max"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              min="0"
-            />
-          </div>
-        </div>
+        <h4 className="font-bold text-[14px] mb-2">Price</h4>
+        <ul className="space-y-1 text-[14px] mb-2 text-[#0f1111]">
+          <li><button className="hover:text-[#c45500] hover:underline">Under $25</button></li>
+          <li><button className="hover:text-[#c45500] hover:underline">$25 to $50</button></li>
+          <li><button className="hover:text-[#c45500] hover:underline">$50 to $100</button></li>
+          <li><button className="hover:text-[#c45500] hover:underline">$100 to $200</button></li>
+          <li><button className="hover:text-[#c45500] hover:underline">$200 & Above</button></li>
+        </ul>
+        <form onSubmit={applyPriceFilter} className="flex items-center space-x-2 mt-2">
+          <input
+            type="number"
+            placeholder="$ Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-16 px-2 py-1 border border-gray-400 rounded-md focus:outline-none focus:border-[#e77600] focus:shadow-[0_0_3px_2px_rgba(228,121,17,0.5)] text-[14px]"
+            min="0"
+          />
+          <span className="text-gray-500">-</span>
+          <input
+            type="number"
+            placeholder="$ Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-16 px-2 py-1 border border-gray-400 rounded-md focus:outline-none focus:border-[#e77600] focus:shadow-[0_0_3px_2px_rgba(228,121,17,0.5)] text-[14px]"
+            min="0"
+          />
+          <button
+            type="submit"
+            className="px-3 py-1 bg-white border border-[#D5D9D9] hover:bg-[#F0F2F2] rounded-lg shadow-sm text-[13px] font-medium"
+          >
+            Go
+          </button>
+        </form>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex space-x-4">
-        <button
-          onClick={applyFilters}
-          className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Apply Filters
-        </button>
-        <button
-          onClick={resetFilters}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-        >
-          Reset
-        </button>
-      </div>
+      {(category || minPrice || maxPrice) && (
+        <div className="pt-4 border-t border-gray-200">
+          <button
+            onClick={clearFilters}
+            className="text-[14px] text-[#007185] hover:text-[#c45500] hover:underline"
+          >
+            Clear all filters
+          </button>
+        </div>
+      )}
     </div>
   );
 };

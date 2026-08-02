@@ -1,124 +1,99 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  FaUser,
-  FaEnvelope,
-  FaUserTag,
-  FaEdit,
-  FaKey,
-  FaShoppingBag,
-} from "react-icons/fa";
-import { getAvatarUrl, formatDate } from "../../helpers/helpers";
+import { Link } from "react-router-dom";
+import { FaBoxOpen, FaLock, FaAddressCard, FaCreditCard, FaHeadset, FaGift } from "react-icons/fa";
 
 const Profile = () => {
   const { user } = useSelector((state) => state.auth);
 
-  if (!user) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-600">Please login to view your profile.</p>
-      </div>
-    );
-  }
-
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Profile</h1>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Profile Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-md p-6 text-center">
-            <div className="w-32 h-32 mx-auto rounded-full overflow-hidden bg-gray-200">
-              {user.avatar?.url ? (
-                <img
-                  src={getAvatarUrl(user.avatar)}
-                  alt={user.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-blue-500 text-white text-4xl font-bold">
-                  {user.name?.charAt(0) || <FaUser />}
-                </div>
-              )}
+    <div className="bg-white min-h-[70vh] pb-12">
+      <div className="max-w-[1000px] mx-auto px-4 py-6">
+        
+        <h1 className="text-[28px] font-normal text-[#0f1111] mb-6">Your Account</h1>
+        
+        {/* Amazon Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          
+          {/* Box 1 */}
+          <Link to="/me/orders" className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaBoxOpen className="text-5xl text-[#007185] opacity-80" />
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mt-4">
-              {user.name}
-            </h2>
-            <p className="text-gray-600">{user.email}</p>
-            <p className="text-sm text-gray-500 mt-1">
-              <span className="capitalize">Role: {user.role}</span>
-            </p>
-            <p className="text-xs text-gray-400 mt-2">
-              Joined {formatDate(user.createdAt)}
-            </p>
-          </div>
-        </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Your Orders</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">Track, return, or buy things again</p>
+            </div>
+          </Link>
 
-        {/* Profile Actions */}
-        <div className="lg:col-span-2">
-          <div className="bg-white rounded-xl shadow-md p-6">
-            <h3 className="font-semibold text-gray-800 mb-4">
-              Account Settings
-            </h3>
+          {/* Box 2 */}
+          <Link to="/me/update" className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaLock className="text-5xl text-[#007185] opacity-80" />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Login & security</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">Edit login, name, and mobile number</p>
+            </div>
+          </Link>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Link
-                to="/me/update"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mr-3">
-                  <FaEdit />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-800">Edit Profile</p>
-                  <p className="text-sm text-gray-500">
-                    Update your personal information
-                  </p>
-                </div>
-              </Link>
+          {/* Box 3 */}
+          <Link to="/me/update" className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaAddressCard className="text-5xl text-[#007185] opacity-80" />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Your Addresses</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">Edit addresses for orders and gifts</p>
+            </div>
+          </Link>
 
-              <Link
-                to="/password/update"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600 mr-3">
-                  <FaKey />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-800">Change Password</p>
-                  <p className="text-sm text-gray-500">Update your password</p>
-                </div>
-              </Link>
-
-              <Link
-                to="/me/orders"
-                className="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mr-3">
-                  <FaShoppingBag />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-800">My Orders</p>
-                  <p className="text-sm text-gray-500">
-                    View your order history
-                  </p>
-                </div>
-              </Link>
-
-              <div className="flex items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mr-3">
-                  <FaEnvelope />
-                </div>
-                <div>
-                  <p className="font-medium text-gray-800">{user.email}</p>
-                  <p className="text-sm text-gray-500">Email Address</p>
-                </div>
-              </div>
+          {/* Box 4 */}
+          <div className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaGift className="text-5xl text-[#007185] opacity-80" />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Gift cards</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">View balance, redeem, or reload cards</p>
             </div>
           </div>
+
+          {/* Box 5 */}
+          <div className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaCreditCard className="text-5xl text-[#007185] opacity-80" />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Your Payments</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">Manage payment methods and settings, view all transactions</p>
+            </div>
+          </div>
+
+          {/* Box 6 */}
+          <div className="border border-[#D5D9D9] hover:bg-gray-50 rounded-lg p-4 flex items-start cursor-pointer shadow-sm">
+            <div className="w-[60px] h-[60px] mr-3 mt-1">
+              <FaHeadset className="text-5xl text-[#007185] opacity-80" />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[17px] text-[#0f1111] font-normal">Customer Service</h2>
+              <p className="text-[13px] text-[#565959] leading-tight mt-1">Browse self service options, help articles or contact us</p>
+            </div>
+          </div>
+
         </div>
+        
+        {/* Profile specific minimal info */}
+        <div className="mt-8 pt-8 border-t border-gray-200">
+           <h3 className="font-bold text-[16px] text-[#0f1111] mb-2">Account snapshot</h3>
+           <p className="text-[14px] text-[#565959]">Logged in as: <span className="font-bold text-[#0f1111]">{user?.name}</span> ({user?.email})</p>
+           {user?.role === "admin" && (
+             <Link to="/admin" className="text-[14px] text-[#007185] hover:text-[#c45500] hover:underline mt-2 inline-block font-bold">
+               Go to Admin Dashboard
+             </Link>
+           )}
+        </div>
+
       </div>
     </div>
   );

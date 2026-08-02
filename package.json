@@ -13,7 +13,11 @@
     "seed:dry": "node backend/seeder/seeder.js --dry-run",
     "seed:prod": "NODE_ENV=production node backend/seeder/seeder.js --clear",
     "seed:export": "node backend/seeder/seeder-cli.js export",
-    "seed:import": "node backend/seeder/seeder-cli.js import"
+    "seed:import": "node backend/seeder/seeder-cli.js import",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:frontend\"",
+    "install:all": "npm install && cd frontend && npm install",
+    "prepare": "husky"
   },
   "keywords": [
     "ecommerce",
@@ -59,7 +63,20 @@
   "devDependencies": {
     "chalk": "^5.3.0",
     "commander": "^11.0.0",
+    "concurrently": "^10.0.4",
+    "husky": "^9.1.7",
     "inquirer": "^9.2.11",
-    "nodemon": "^3.0.1"
+    "lint-staged": "^16.4.0",
+    "nodemon": "^3.0.1",
+    "prettier": "^3.9.6"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   }
 }

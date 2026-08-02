@@ -11,7 +11,7 @@ import Layout from "./components/layout/Layout";
 import AdminLayout from "./components/layout/AdminLayout";
 
 // Public Routes
-import Home from "./components/Home";
+import Home from "./components/home/Home";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import ForgotPassword from "./components/auth/ForgotPassword";
